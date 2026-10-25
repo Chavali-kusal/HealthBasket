@@ -1,0 +1,11 @@
+window.HB={role:window.HB_ROLE,token:sessionStorage.getItem('hb_api_'+window.HB_ROLE)||'',user:null,snapshot:null,ready:false};
+HB.api=async function(path,data){const response=await fetch('/api'+path,{method:data===undefined?'GET':'POST',headers:{'Content-Type':'application/json',...(HB.token?{Authorization:'Bearer '+HB.token}:{})},...(data===undefined?{}:{body:JSON.stringify(data)})});const result=await response.json();if(!response.ok)throw new Error(result.error||'Server could not finish the action.');return result};
+HB.adopt=function(s){HB.snapshot=s;HB.user=s.user;return s};HB.refresh=async()=>HB.adopt(await HB.api('/state'));
+HB.login=async function(username,password,name){const s=await HB.api('/login',{role:HB.role,username,password,name});HB.token=s.token;sessionStorage.setItem('hb_api_'+HB.role,s.token);HB.ready=true;return HB.adopt(s)};
+HB.logout=async function(){try{await HB.api('/logout',{})}catch{}HB.token='';HB.ready=false;HB.user=null;sessionStorage.removeItem('hb_api_'+HB.role)};
+HB.action=async function(action,id,extra={}){return HB.adopt(await HB.api('/action',{action,id,...extra}))};
+HB.unmask=function(){document.getElementById('hbLoading')?.remove()};
+HB.startPoll=function(callback){clearInterval(HB.poll);HB.poll=setInterval(async()=>{if(!HB.token||document.hidden||HB.writing)return;try{const old=JSON.stringify(HB.snapshot);const s=await HB.refresh();if(JSON.stringify(s)!==old)callback(s)}catch(e){console.warn('Sync temporarily unavailable');}},1800)};
+HB.refreshNow=async function(){if(!HB.token||HB.writing)return;const s=await HB.refresh();if(HB.onUpdate)HB.onUpdate(s);return s};
+const hbOriginalPoll=HB.startPoll;HB.startPoll=function(callback){HB.onUpdate=callback;hbOriginalPoll(callback)};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&HB.token)HB.refreshNow().catch(()=>{})});

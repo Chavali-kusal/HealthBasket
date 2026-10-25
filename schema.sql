@@ -1,0 +1,27 @@
+PRAGMA foreign_keys=ON;
+CREATE TABLE IF NOT EXISTS hospitals(id TEXT PRIMARY KEY,name TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS users(id TEXT PRIMARY KEY,username TEXT UNIQUE NOT NULL,role TEXT NOT NULL,name TEXT NOT NULL,hospital_id TEXT REFERENCES hospitals(id),password_hash TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS sessions(token TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),expires REAL NOT NULL);
+CREATE TABLE IF NOT EXISTS driver_profiles(id TEXT PRIMARY KEY REFERENCES users(id),vehicle TEXT NOT NULL,online INTEGER NOT NULL DEFAULT 0,lat REAL NOT NULL,lng REAL NOT NULL,data TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS services(id TEXT PRIMARY KEY,name TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS hospital_services(hospital_id TEXT NOT NULL REFERENCES hospitals(id),service_id TEXT NOT NULL REFERENCES services(id),enabled INTEGER NOT NULL DEFAULT 1,PRIMARY KEY(hospital_id,service_id));
+CREATE TABLE IF NOT EXISTS requests(id TEXT PRIMARY KEY,customer_id TEXT NOT NULL REFERENCES users(id),hospital_id TEXT NOT NULL REFERENCES hospitals(id),driver_id TEXT REFERENCES users(id),service TEXT NOT NULL REFERENCES services(id),stage TEXT NOT NULL,created_at TEXT NOT NULL,revision INTEGER NOT NULL DEFAULT 1,data TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS requests_hospital ON requests(hospital_id,stage);
+CREATE INDEX IF NOT EXISTS requests_driver ON requests(driver_id,stage);
+CREATE TABLE IF NOT EXISTS referrals(id TEXT PRIMARY KEY,doctor_id TEXT NOT NULL REFERENCES users(id),hospital_id TEXT NOT NULL REFERENCES hospitals(id),status TEXT NOT NULL,created_at TEXT NOT NULL,data TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS driver_claims(id TEXT PRIMARY KEY,trip_id TEXT UNIQUE NOT NULL REFERENCES requests(id),driver_id TEXT NOT NULL REFERENCES users(id),amount REAL NOT NULL,status TEXT NOT NULL,created_at TEXT NOT NULL,data TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS payments(id TEXT PRIMARY KEY,request_id TEXT UNIQUE NOT NULL REFERENCES requests(id),customer_id TEXT NOT NULL REFERENCES users(id),amount REAL NOT NULL,method TEXT NOT NULL,status TEXT NOT NULL,created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS events(id INTEGER PRIMARY KEY AUTOINCREMENT,request_id TEXT NOT NULL,actor_id TEXT NOT NULL REFERENCES users(id),hospital_id TEXT,customer_id TEXT,text TEXT NOT NULL,created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS documents(id TEXT PRIMARY KEY,request_id TEXT NOT NULL REFERENCES requests(id),owner_id TEXT NOT NULL REFERENCES users(id),filename TEXT NOT NULL,mime TEXT NOT NULL,content BLOB NOT NULL,created_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS ledger_records(id TEXT PRIMARY KEY,customer_id TEXT NOT NULL REFERENCES users(id),hospital_id TEXT REFERENCES hospitals(id),kind TEXT NOT NULL,created_at TEXT NOT NULL,data TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS user_profiles(user_id TEXT PRIMARY KEY REFERENCES users(id),data TEXT NOT NULL);
+
+CREATE INDEX IF NOT EXISTS requests_customer ON requests(customer_id,created_at);
+CREATE INDEX IF NOT EXISTS ledger_owner_kind ON ledger_records(customer_id,kind);
+CREATE INDEX IF NOT EXISTS documents_request ON documents(request_id);
+CREATE INDEX IF NOT EXISTS events_customer ON events(customer_id,id);
+CREATE INDEX IF NOT EXISTS events_hospital ON events(hospital_id,id);
+CREATE TABLE IF NOT EXISTS privacy_requests(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),kind TEXT NOT NULL,status TEXT NOT NULL,created_at TEXT NOT NULL);
+CREATE UNIQUE INDEX IF NOT EXISTS privacy_pending_unique ON privacy_requests(user_id,kind) WHERE status='Pending company review';
+CREATE TABLE IF NOT EXISTS intake_links(token TEXT PRIMARY KEY,doctor_id TEXT NOT NULL REFERENCES users(id),hospital_id TEXT NOT NULL REFERENCES hospitals(id),expires REAL NOT NULL,UNIQUE(doctor_id,hospital_id));
+CREATE TABLE IF NOT EXISTS intake_submissions(submission_id TEXT PRIMARY KEY,token TEXT NOT NULL REFERENCES intake_links(token),referral_id TEXT NOT NULL REFERENCES referrals(id));

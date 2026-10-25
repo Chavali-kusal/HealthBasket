@@ -1,0 +1,78 @@
+HealthBasket Four Apps v3.1 — independent apps, one shared database
+
+This build has FOUR separate app entry points, not a Hospital/Driver role picker:
+  Customer:  http://localhost:8765/customer/
+  Doctor:    http://localhost:8765/doctor/
+  Hospital:  http://localhost:8765/hospital/
+  Driver:    http://localhost:8765/driver/
+
+UPDATING FROM v3.0? Read UPDATE_v3_1.txt first and KEEP data/healthbasket.sqlite3.
+
+RUN ON WINDOWS
+1. Extract the ZIP completely.
+2. Python 3.10+ must be installed. No pip packages are required.
+3. Close the earlier static-preview server if it is using port 8765.
+4. Run START_SERVER_WINDOWS.bat. Keep its console open.
+5. Hospital App opens first. Use OPEN_CUSTOMER.bat, OPEN_DOCTOR.bat,
+   OPEN_HOSPITAL.bat and OPEN_DRIVER.bat to launch each independent app.
+6. Do NOT double-click the web HTML files; this is now a shared API/database build.
+
+Run elsewhere: python3 server.py --open
+Or: python server.py --port 8765
+
+DEMO LOGINS
+Customer: Enter your chosen name + a sample 10-digit mobile beginning 6/7/8/9.
+          OTP 1234. Use e.g. 9000000009, not the registered driver mobile.
+Doctor:   doctor001 / 1234
+Hospital: hospital001 / 1234  (VeloCare Hospital)
+          hospital002 / 1234  (City Health Hospital)
+          hospital003 / 1234  (Sunrise Hospital)
+Driver:   9000000001 / 1234
+          A sample BLS vehicle is registered at 14.6819,77.6006 (Anantapur).
+          Switch Online before testing a nearby request.
+          New drivers can register in the Driver App; demo password is 1234.
+
+ONE DATABASE
+First server run automatically creates data/healthbasket.sqlite3 and all common tables.
+All four apps use this SAME SQLite file and API. Core records are not exchanged
+through browser localStorage. Separate browser sessions can see permitted updates.
+Hospital/service IDs are common across the Customer and Doctor forms.
+The new database starts with demo accounts/hospital/service masters, not old patients.
+Earlier static-file browser data is not automatically imported.
+
+REPORTS
+Customer: Profile -> Reports & downloads
+Doctor: Practice reports / Reports bottom tab
+Hospital: Reports bottom tab or overview tile
+Driver: Reports bottom tab or Trip reports tile
+All include inclusive From/To creation-date filters (IST), relevant service/record
+filters, actual PDF and .xlsx downloads and matching download-again links.
+
+TRY THE CONNECTION
+- Customer consultation request to VeloCare -> hospital001 accepts and confirms
+  doctor/fee -> Customer dummy payment -> Hospital completes consultation.
+- Customer prescription upload -> Hospital opens the saved prescription even after
+  Customer reload -> accepts -> service -> bill -> cash/link -> customer OTP.
+- Driver online -> Customer ambulance request near registered base -> driver accepts
+  -> arrival -> pickup OTP -> hospital drop -> handover OTP -> Customer dummy payment
+  -> Driver claims once. Hospital receives request/pickup/drop events in its inbox.
+- Doctor submits patient to the same VeloCare master -> hospital001 follows up and
+  confirms admission -> Doctor status updates. No referral fee is inferred.
+
+Driver claim approval/payout remains a future COMPANY FINANCE service; no driver,
+hospital or customer can approve a real bank payout in this build.
+
+The server must remain running. Core updates poll about every 1.8 seconds.
+Default binding is this computer only. For a trusted LAN test, see DEVELOPMENT.md.
+Payments/cashback/WhatsApp/emergency dispatch are still demonstrations. Public demo
+credentials and unencrypted local SQLite are not production security. Sample data only.
+
+Read DEVELOPMENT.md, DATABASE_MAP.md and TEST_RESULTS.md before further development.
+
+V4.0 REFUNDS / RECORDS
+Read REFUND_OPERATIONS.md for company finance workflow. Review SECURITY_PRODUCTION_ROADMAP.md and SCALE_AND_GATEWAY_PLAN.md for production gaps.
+Run tests: python tests/test_api.py ; python tests/test_schedule.py ; python tests/test_services.py ; python tests/test_refund_v4.py ; python tests/test_gateway_security.py
+
+V4.1: Read UPDATE_v4_1.txt for compact landscape layouts, Driver auto-availability, QR phone-network setup and background push limits. Extra test: python tests/test_driver_qr.py
+
+LATEST v4.2: Portrait mobile layout only. Read UPDATE_v4_2.txt; it supersedes v4.1 landscape layout instructions.

@@ -1,0 +1,4 @@
+v4.4 Automatic bill reference
+For pharmacy/lab/physician/package services, the unique request ID (HB-...) becomes the automatic app bill reference at ready/completed stage. The Hospital manual Bill reference input is removed. Existing non-empty bill references remain unchanged. Missing references on older ready/completed rows are filled at startup; database/payment amounts stay intact.
+Paid bills show a compact read-only summary; unpaid bills retain amount confirmation. Customer completion OTP remains available after cash/payment until service completion. History and report publication stay grouped.
+Keep data/healthbasket.sqlite3. Stop server; replace server.py and complete web folder; restart python server.py --open; Ctrl+F5 all tabs.

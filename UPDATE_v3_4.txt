@@ -1,0 +1,6 @@
+v3.4 Service history, layout and cancellation/refund requests
+Hospital/Driver full history is grouped in a collapsed request/payment timeline; Customer detail has full expandable history (not only last four events).
+Hospital body scrolls internally above navigation. Compact forms/cards at small heights.
+Customer: paid unfinished booking -> Cancel service & request refund -> reason -> confirmation. Refund ID/amount/reason/timestamp persist; hospital can acknowledge review. Completed service and repeated requests are blocked. No live bank refund, payout or gateway integration. Cancellation charge remains disabled.
+Refund request is a separate report row; request amount is not a bank settlement total.
+Keep data/healthbasket.sqlite3 unchanged. Ctrl+C old server; replace code/web files; python server.py --open; Ctrl+F5 both tabs. New folder: copy your existing SQLite database to data before starting. Never use test DB files.

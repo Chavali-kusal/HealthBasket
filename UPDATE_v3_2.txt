@@ -1,0 +1,4 @@
+Consultation slot fix v3.2
+Hospital: requested slot is accepted by default. Change date/time only if doctor unavailable. Revised slots require customer consent.
+Preserve data/healthbasket.sqlite3. Stop old server with Ctrl+C, replace code/web files, then run python server.py --open. Browser: Ctrl+F5.
+No doctor fee approval feature added in this update.

@@ -1,0 +1,4 @@
+v3.3 Hospital consultation display and payment sync fix
+Confirmed appointments show payment state and next action. Rescheduling is optional and collapsed by default.
+Payment changes arriving while an input has focus render after focus leaves the input; no lost refresh.
+Keep data/healthbasket.sqlite3. Stop server (Ctrl+C), replace code/web files, restart python server.py --open, and Ctrl+F5 in both apps. Do not pay again for paid bookings.

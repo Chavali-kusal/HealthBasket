@@ -1,0 +1,8 @@
+v4.0 Approval-gated refunds, real Records and security handoff
+Keep existing data/healthbasket.sqlite3. Stop server, replace server.py + credit_ops.py + company_finance.py + gateway_security.py + schema.sql and complete web folder. Restart python server.py --open; Ctrl+F5 all tabs. No pip dependency added.
+Customer cancellation is now a REQUEST. Hospital verifies and approves/rejects. Only approval exposes refund claim. Completed services/reports cannot cancel. 48 hours is company review target, not guaranteed bank refund credit time.
+Claim options: original source, explicit discount credit, bank preference (last4 only; no real full-bank collection). Company finance commands in REFUND_OPERATIONS.md. No live bank refund / payout.
+Records: persisted Rx uploads, actual Hospital-published reports after completion, payment/cancellation history, discount balance.
+Payment terms acceptance is required by both UI and API, with version/timestamp stored.
+Read SECURITY_PRODUCTION_ROADMAP.md and SCALE_AND_GATEWAY_PLAN.md before any real user launch. Native apps, live gateways, store approval and 1-crore concurrent capacity are NOT delivered/certified by this local bundle.
+Back up old DB. Legacy cancellation entries require manual reconciliation; no historical approval is invented.

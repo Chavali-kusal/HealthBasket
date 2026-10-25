@@ -1,0 +1,4 @@
+v4.3 Mobile frames and single-column fields
+QR Patient intake had a separate legacy wide-layout rule. It is removed. Intake now has a 410px maximum portrait frame, internal vertical scrolling, and stacked Name/Mobile/Gender/Reason fields on every viewport.
+Customer, Doctor, Hospital and Driver field groups (date/time, address, billing, registration and report filters) use a single column. Two-column service TILE grids remain compact. No service/payment/QR/availability logic changes.
+Keep data/healthbasket.sqlite3 unchanged. Stop server; replace complete code/web folder; python server.py --open; Ctrl+F5 all existing app AND intake tabs.

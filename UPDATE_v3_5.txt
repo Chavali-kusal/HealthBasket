@@ -1,0 +1,6 @@
+v3.5 Four-app responsive polish
+Light premium service cards inspired by the supplied healthcare reference: circular colour icons, subtle sculpted gradients/shadows and compact labels. All original services retained.
+Shared app-polish.css is served by server.py. Header/navigation stay within viewport; long page content scrolls inside its app. No outer page overflow.
+Checked 43 routed screens across 320x568, 390x844, 1440x900 (129 checks), plus shared service/payment/OTP and report download regressions.
+Preserve data/healthbasket.sqlite3. Stop old server; replace code including server.py and complete web folder; python server.py --open; Ctrl+F5 all tabs. New folder: copy existing database first.
+Refund requests remain demo reconciliation, no live bank funds moved.

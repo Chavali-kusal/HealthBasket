@@ -1,0 +1,30 @@
+Four Apps v3.1 — Hospital inbox clarity + consultation scheduling
+
+YOUR SCREENSHOT REQUEST:
+Sunrise Hospital -> hospital003 / 1234.
+VeloCare Hospital -> hospital001 / 1234.
+City Health Hospital -> hospital002 / 1234.
+Each hospital sees ONLY its own requests. Do not change that isolation to make every request visible to all hospitals.
+
+UPDATE WITHOUT LOSING EXISTING REQUESTS
+1. Stop the old server with Ctrl+C in its CMD window.
+2. Back up the OLD data/healthbasket.sqlite3 file.
+3. Extract this ZIP. Replace the application's code/web files in your existing project folder while KEEPING its data/healthbasket.sqlite3.
+   If using a newly extracted folder instead, copy your OLD data/healthbasket.sqlite3 into the NEW data folder before first server start.
+4. This ZIP contains NO populated database and no script that deletes your records. Schema does not change in this update.
+5. In that updated folder run: python server.py --open
+6. Sign into the matching hospital account. Open Inbox -> New, or All. The hospital name/ID is now explicit and there is a Refresh button.
+7. Refresh browser tabs after updating so all use the same new server/client build.
+
+CONSULTATION FLOW
+Customer requests preferred hospital/date/time.
+Matching hospital sees request, selects doctor, fee and confirmed available date/start/end time.
+If hospital changes the date/time, the Customer sees requested vs proposed slot and must accept the revised schedule before payment.
+Hospital may propose another date/time before consultation completion. If payment already exists, it is retained; no second payment is requested.
+A changed paid appointment still needs customer approval before the hospital can complete it.
+Staff confirms actual availability manually. The server rejects overlapping confirmed slots for the same demo doctor identifier, invalid times and stale customer approvals. This is not an external live calendar integration.
+
+WHAT ELSE WAS FIXED
+The old Customer-side 'Demo: hospital confirms doctor & fee' button was hidden via the hidden attribute, but a CSS display rule could still show it. A stronger [hidden] rule now removes it from the visible Customer flow. Only the hospital role can confirm through the API.
+When returning to a browser tab the API now refreshes immediately, in addition to periodic polling.
+Hospital reports keep their reserved footer/nav layout; account information is placed in the header there.

@@ -1,0 +1,14 @@
+v4.1 — Compact pages, landscape, Driver availability, Doctor QR/form
+
+UPDATE: Keep data/healthbasket.sqlite3. Stop the old server (Ctrl+C), replace ALL code files/schema.sql and complete web folder, restart python server.py --open; Ctrl+F5 every app. No populated database is included. No pip/npm install needed for QR at runtime.
+
+UI: smaller service tiles/icon badges and shorter Hospital/Driver/Customer top boxes. Landscape uses the available width with responsive tile columns; long forms, histories and report lists scroll inside the app above navigation. Checked 320x568,390x844,568x320,844x390,1440x900.
+
+DRIVER: successful login and new registration set availability ON. Manual OFF persists across reload; do not force it ON on each page refresh. Signout sets availability OFF and revokes all driver sessions for that account. Online state is stored in SQLite and does not turn OFF just because a tab becomes hidden or the phone locks. Existing logged-in sessions preserve their prior manual state; sign out and sign in once to exercise the new login behaviour.
+New matching excludes OFF drivers. Running-tab in-app alerts and optional browser notifications are available in Driver Account > Enable browser alerts. Background/locked-screen push delivery is NOT configured or tested on a physical phone; browser polling is not a background push service. HTTPS + Web Push subscription/service worker/provider or native FCM/APNs integration and device permissions are still required. Public/demo credentials remain unsuitable for production.
+
+DOCTOR: Age input removed. Manual Referral note textarea removed. Server generates a REF reference and displays it as referral note/reference. Checkbox is 16px; original consent requirement preserved. Old database records are retained.
+
+QR: local bundled encoder (no third-party QR endpoint) generates a real hospital/Doctor intake link. Scan or click Open patient form; submission writes one shared referral with automatic reference to Doctor and selected Hospital. Form uses token-scoped links/consent/rate limits and duplicate-submit keys; no public patient-list/read API. Local demo only, not a hardened public medical intake service.
+
+PHONE NETWORK: localhost means the device opening the link. For a phone on the same trusted Wi-Fi, bind the test server with python server.py --host 0.0.0.0, allow the chosen local port in your firewall, and open http://YOUR_PC_LAN_IP:8765/doctor/ before generating QR. Only sample information on a trusted network. Alternatively configure HEALTHBASKET_PUBLIC_BASE_URL to your reachable HTTPS service base and deploy securely. A QR generated with localhost will not reach your PC from a different phone. Do not expose the local demo directly to the internet. Links are scoped to doctor/hospital and refreshed for 30 days when requested; store URLs safely.

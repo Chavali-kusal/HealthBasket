@@ -1,0 +1,5 @@
+v4.2 PORTRAIT STYLE CORRECTION
+All four apps use vertical, narrow mobile frames (maximum 410px) on every viewport. Two-column service tiles remain small. All landscape/wide-screen expansion rules from v4.1 are removed. Long content scrolls vertically inside the frame above navigation.
+Driver login auto-online/offline and Doctor QR/intake/form changes are retained.
+Keep data/healthbasket.sqlite3. Stop server, replace code and complete web folder, restart python server.py --open and Ctrl+F5 all tabs. No database reset.
+This supersedes v4.1 layout/orientation notes.
