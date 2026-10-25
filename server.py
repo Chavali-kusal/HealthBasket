@@ -494,12 +494,35 @@ class Handler(BaseHTTPRequestHandler):
   except Exception as e:
    print('API error:',type(e).__name__,str(e));self.respond(500,{'error':'Server could not finish this action.'})
 if __name__=='__main__':
- import argparse
- parser=argparse.ArgumentParser();parser.add_argument('--host',default='127.0.0.1');parser.add_argument('--port',type=int,default=8765);parser.add_argument('--open',action='store_true');args=parser.parse_args();initialise();url=f'http://localhost:{args.port}'
- print('HealthBasket Four Apps — one SQLite database:',DB);print('\n'.join(url+'/'+r+'/' for r in ['customer','doctor','hospital','driver']));print('DEMO ONLY: OTP/password 1234; no real payments/WhatsApp. Ctrl+C to stop.')
- try:httpd=ThreadingHTTPServer((args.host,args.port),Handler)
- except OSError:raise SystemExit('Port is already in use. Stop the previous preview server or choose another --port.')
- if args.open:threading.Timer(.7,lambda:webbrowser.open(url+'/hospital/')).start()
- try:httpd.serve_forever()
- except KeyboardInterrupt:print('Server stopped. Shared database is preserved.')
- finally:httpd.server_close()
+ if __name__=='__main__':
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host', default='0.0.0.0')
+    parser.add_argument('--port', type=int, default=int(os.environ.get('PORT', 8765)))
+    parser.add_argument('--open', action='store_true')
+
+    args = parser.parse_args()
+
+    initialise()
+
+    url = f'http://localhost:{args.port}'
+
+    print('HealthBasket Four Apps — one SQLite database:', DB)
+    print('\n'.join(url + '/' + r + '/' for r in ['customer','doctor','hospital','driver']))
+    print('DEMO ONLY: OTP/password 1234; no real payments/WhatsApp. Ctrl+C to stop.')
+
+    try:
+        httpd = ThreadingHTTPServer((args.host, args.port), Handler)
+    except OSError:
+        raise SystemExit('Port is already in use. Stop the previous preview server or choose another --port.')
+
+    if args.open:
+        threading.Timer(.7, lambda: webbrowser.open(url + '/hospital/')).start()
+
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        print('Server stopped. Shared database is preserved.')
+    finally:
+        httpd.server_close()
